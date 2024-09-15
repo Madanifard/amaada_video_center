@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',  # setting ==> REST_FRAMEWORK
     'drf_spectacular',  # settings ==> SPECTACULAR_SETTINGS
+    'channels',
+    'video',
 ]
 
 MIDDLEWARE = [
@@ -134,6 +136,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -168,4 +173,15 @@ KEYCLOAK_CONFIG = {
     'CLIENT_ID': os.environ.get('KEYCLOAK_CLIENT_ID'),
     'CLIENT_SECRET': os.environ.get('KEYCLOAK_CLIENT_SECRET'),
     'VERIFY_SSL': False,
+}
+
+ASGI_APPLICATION = 'config.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(os.environ.get('CHANNEL_HOST', '127.0.0.1'), os.environ.get('CHANNEL_PORT', 6379))],
+        },
+    },
 }

@@ -4,3 +4,5 @@ python-keycloak
 psycopg
 python-dotenv
 drf-spectacular
+channels
+channels_redis
