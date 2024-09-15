@@ -1,0 +1,6 @@
+Django
+djangorestframework
+python-keycloak
+psycopg
+python-dotenv
+drf-spectacular

@@ -1,0 +1,32 @@
+# Visual Studio Code #
+.vscode/
+
+# celery
+celerybeat-schedule.*
+
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+# Backup files #
+*.bak
+
+
+# If you are using PyCharm #
+# User-specific stuff
+.idea/
+
+# Environments
+.env
+.env.db
+.venv
+env/
+venv/
+VENV/
+ENV/
+env.bak/
+venv.bak/

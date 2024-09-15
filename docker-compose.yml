@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    ports:
+      - 8080:8080
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres_keycloak
+      DB_DATABASE: ${POSTGRES_KEYCLOAK_DB}
+      DB_USER: ${POSTGRES_KEYCLOAK_USER}
+      DB_PASSWORD: ${POSTGRES_KEYCLOAK_PASSWORD}
+    env_file:
+      - .env
+    depends_on:
+      - postgres_keycloak
+    restart: always
+    networks:
+      - viedo-center-network
+    command: ["start-dev"]
+
+  postgres_keycloak:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ${POSTGRES_KEYCLOAK_DB}
+      POSTGRES_USER: ${POSTGRES_KEYCLOAK_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_KEYCLOAK_PASSWORD}
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - viedo-center-network
+
+  django:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - ${DJANGO_MAP_PORT}:8000
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    env_file:
+      - .env
+    depends_on:
+      - postgres_django
+    restart: always
+
+  postgres_django:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    restart: always
+    networks:
+      - viedo-center-network
+
+networks:
+  viedo-center-network:
